@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDomain> queryAllUser() {
+        System.err.println("从db中获取数据");
         return userDao.queryAllUser();
     }
 }

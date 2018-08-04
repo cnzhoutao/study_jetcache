@@ -1,5 +1,7 @@
 package com.zt.study_jetcache.controller;
 
+import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.anno.CreateCache;
 import com.zt.study_jetcache.domain.UserDomain;
 import com.zt.study_jetcache.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -16,6 +19,18 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    @CreateCache(expire = 100)
+    private Cache<Long, Long> userCache;
+
+
+
+    @RequestMapping(value = "index1")
+    public String indexHtml(HttpServletRequest request){
+        System.err.println("进入首页请求");
+        return "index";
+    }
 
     @RequestMapping(value = "insert")
     @ResponseBody
@@ -34,6 +49,21 @@ public class UserController {
     public List<UserDomain> queryAll() {
         return userService.queryAllUser();
     }
+
+    @RequestMapping(value = "/put")
+    @ResponseBody
+    public Long testCachePut(long key,long val){
+        userCache.put(key,val);
+        return val;
+    }
+
+    @RequestMapping(value = "/get")
+    @ResponseBody
+    public Long testCacheget(long key){
+     return userCache.get(key);
+    }
+
+
 
 
 }
